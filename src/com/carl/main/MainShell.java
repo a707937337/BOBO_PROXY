@@ -18,7 +18,7 @@ import com.carl.utils.InitDataUtils;
 
 public class MainShell {
 	// 创建固定数量线程池,避免线程数量太多,服务器拒绝返回数据.
-	private static ExecutorService pool = Executors.newFixedThreadPool(500);
+	private static ExecutorService pool = Executors.newFixedThreadPool(100);
 	private static String unVerifyProxyPath = MainShell.class.getClassLoader().getResource("").getPath() + "ips.txt";
 	private static String usefulProxyPath = MainShell.class.getClassLoader().getResource("").getPath() + "verifiedProxy.txt";
 
@@ -62,7 +62,6 @@ public class MainShell {
 		for (int i = 0; i < urls.size(); i++) {
 			for (int j = 1; j < pageCount; j++) {
 				String url = urls.get(i) + "" + j;
-				System.out.println(url);
 				pool.execute(new SpiderThread(url));
 			}
 		}

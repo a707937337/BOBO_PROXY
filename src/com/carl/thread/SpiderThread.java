@@ -22,10 +22,16 @@ public class SpiderThread extends Thread {
 		try {
 			URL url = new URL(urlStr);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0");
+			conn.setRequestProperty("Host","www.xici.net.co");
+			conn.setRequestProperty("Cache-Control","max-age=0");
+			conn.setRequestProperty("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 			conn.connect();
-			if(conn.getResponseCode()!=200){
-				System.out.println("线程[" + getId() + "] 抓取页面出错,返回错误."+urlStr);
+			int code = -1;
+			if((code = conn.getResponseCode())!=200){
+				System.out.println("线程[" + getId() + "] 返回错误...["+code+"]\t"+urlStr);
 				MainShell.spiderDataHandler(null);
+				return;
 			}
 			InputStream in = conn.getInputStream();
 			String page = IOUtils.toString(in, "utf-8");
