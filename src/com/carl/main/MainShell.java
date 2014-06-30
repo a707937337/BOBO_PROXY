@@ -23,8 +23,8 @@ public class MainShell {
 	private static String usefulProxyPath = MainShell.class.getClassLoader().getResource("").getPath() + "verifiedProxy.txt";
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		// spiderMode();
-		verifyMode();
+		spiderMode();
+		// verifyMode();
 
 	}
 
