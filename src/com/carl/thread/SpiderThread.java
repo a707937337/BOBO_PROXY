@@ -14,7 +14,7 @@ import org.jsoup.select.Elements;
 import com.carl.main.MainShell;
 import com.carl.pojo.Proxy;
 
-public class PageThread extends Thread {
+public class SpiderThread extends Thread {
 	private String urlStr;
 	private Set<Proxy> proxySet = new HashSet<Proxy>();
 	@Override
@@ -45,7 +45,7 @@ public class PageThread extends Thread {
 		}
 	}
 
-	public PageThread(String urlStr) {
+	public SpiderThread(String urlStr) {
 		super();
 		this.urlStr = urlStr;
 	}

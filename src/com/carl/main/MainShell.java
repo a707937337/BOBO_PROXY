@@ -12,7 +12,9 @@ import org.apache.commons.io.FileUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.carl.pojo.Proxy;
+import com.carl.thread.SpiderThread;
 import com.carl.thread.VerifyProxyThread;
+import com.carl.utils.InitDataUtils;
 
 public class MainShell {
 	// 创建固定数量线程池,避免线程数量太多,服务器拒绝返回数据.
@@ -21,16 +23,20 @@ public class MainShell {
 	private static String usefulProxyPath = MainShell.class.getClassLoader().getResource("").getPath() + "verifiedProxy.txt";
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		// int pageCount = InitDataUtils.getPageCount();
-		// List<Object> urls = InitDataUtils.getSearchUrl();
-		// for (int i = 0; i < urls.size(); i++) {
-		// for (int j = 1; j < pageCount; j++) {
-		// String url = urls.get(i) + "" + j;
-		// System.out.println(url);
-		// pool.execute(new PageThread(url));
-		// }
-		// }
-		// pool.shutdown();
+		// spiderMode();
+		verifyMode();
+
+	}
+
+	/**
+	 * 功能: 代理验证模式
+	 * 调用者: Main
+	 * 参数: @throws IOException
+	 * 修改者: Carl.Huang
+	 * 日期: 2014年6月30日 下午9:57:14
+	 * 待做: 异常处理
+	 */
+	public static void verifyMode() throws IOException {
 		Set<Proxy> proxies = new HashSet<Proxy>();
 		List<String> list = FileUtils.readLines(new File(unVerifyProxyPath));
 		for (String s : list) {
@@ -40,9 +46,37 @@ public class MainShell {
 				pool.execute(new VerifyProxyThread(p));
 		}
 		pool.shutdown();
-
 	}
 
+	/**
+	 * 功能: 代理采集模式
+	 * 调用者: Main
+	 * 参数:
+	 * 修改者: Carl.Huang
+	 * 日期: 2014年6月30日 下午9:57:45
+	 * 待做:
+	 */
+	public static void spiderMode() {
+		int pageCount = InitDataUtils.getPageCount();
+		List<Object> urls = InitDataUtils.getSearchUrl();
+		for (int i = 0; i < urls.size(); i++) {
+			for (int j = 1; j < pageCount; j++) {
+				String url = urls.get(i) + "" + j;
+				System.out.println(url);
+				pool.execute(new SpiderThread(url));
+			}
+		}
+		pool.shutdown();
+	}
+
+	/**
+	 * 功能: 采集所得数据处理.
+	 * 调用者: 采集线程回调
+	 * 参数: @param data
+	 * 修改者: Carl.Huang
+	 * 日期: 2014年6月30日 下午9:53:04
+	 * 待做:
+	 */
 	public synchronized static void spiderDataHandler(Set<Proxy> data) {
 		try {
 			StringBuffer sb = new StringBuffer();
@@ -57,6 +91,14 @@ public class MainShell {
 		}
 	}
 
+	/**
+	 * 功能: 验证线程验证代理有效,进行储存
+	 * 调用者: 验证线程回调
+	 * 参数: @param proxy 代理数据
+	 * 修改者: Carl.Huang 日期:
+	 * 2014年6月30日 下午9:51:51
+	 * 待做:
+	 */
 	public synchronized static void verifyDataHandler(Proxy proxy) {
 		try {
 			FileUtils.writeStringToFile(new File(usefulProxyPath), JSON.toJSON(proxy) + "\r\n", true);
