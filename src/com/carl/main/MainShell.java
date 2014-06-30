@@ -23,9 +23,8 @@ public class MainShell {
 	private static String usefulProxyPath = MainShell.class.getClassLoader().getResource("").getPath() + "verifiedProxy.txt";
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		spiderMode();
-		// verifyMode();
-
+//		spiderMode();
+		 verifyMode();
 	}
 
 	/**
@@ -42,7 +41,7 @@ public class MainShell {
 		for (String s : list) {
 			Proxy p = JSON.parseObject(s, Proxy.class);
 			proxies.add(p);
-			if (p.getType().toLowerCase().equals("http"))
+//			if (p.getType().toLowerCase().equals("http"))
 				pool.execute(new VerifyProxyThread(p));
 		}
 		pool.shutdown();

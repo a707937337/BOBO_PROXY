@@ -1,31 +1,47 @@
 package com.carl.test;
 
 import java.io.IOException;
-import java.util.Properties;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
+import java.net.URLConnection;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import org.apache.commons.io.IOUtils;
 
 public class Test {
 	public static void main(String[] args) throws IOException {
-//		JSONObject j = new JSONObject();
-//		List<String>urls = new ArrayList<String>();
-//		urls.add("http://www.xici.net.co/nn/");
-//		urls.add("http://www.xici.net.co/nt/");
-//		urls.add("http://www.xici.net.co/wn/");
-//		urls.add("http://www.xici.net.co/wt/");
-//		urls.add("http://www.xici.net.co/qq/");
-//		j.put("url", urls);
-//		System.out.println(j.toJSONString());
-//		String u = j.toJSONString();
-//		
-		Properties prop = new Properties();
-		prop.load(Test.class.getClassLoader().getResourceAsStream("proxyUrl.properties"));
-		String u =(String) prop.get("url");
-		JSONArray a  =JSON.parseObject(u).getJSONArray("url");
-		for (Object object : a) {
-			System.out.println(object);
+		// Socket socket = new Socket("www.baidu.com", 80);
+		// BufferedWriter out = new BufferedWriter(new
+		// OutputStreamWriter(socket.getOutputStream()));
+		// BufferedReader in = new BufferedReader(new
+		// InputStreamReader(socket.getInputStream()));
+		// StringBuffer sb = new StringBuffer();
+		// sb.append("GET / HTTP/1.1\r\n")
+		// .append("Host:www.baidu.com\r\n")
+		// .append("\r\n");
+		// out.write(sb.toString());
+		// out.flush();
+		// String line = "";
+		// while((line = in.readLine()) != null)
+		// System.out.println(line);
+
+		try {
+			URL url = new URL("http://www.baidu.com");
+			// 创建代理服务器
+			InetSocketAddress addr = new InetSocketAddress("219.147.172.2", 12345);
+			 Proxy proxy = new Proxy(Proxy.Type.SOCKS, addr); // Socket 代理
+//			Proxy proxy = new Proxy(Proxy.Type.HTTP, addr); // http 代理
+			// 如果我们知道代理server的名字, 可以直接使用
+			// 结束
+			 HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
+			InputStream in = conn.getInputStream();
+			// InputStream in = url.openStream();
+			String s = IOUtils.toString(in);
+			System.out.println(s);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
 	}
 }
